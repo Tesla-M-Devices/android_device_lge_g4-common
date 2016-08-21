@@ -123,8 +123,9 @@ BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/lge/g4-common/bluetooth
 BOARD_RIL_CLASS := ../../../device/lge/g4-common/ril/
 
 # GPS
-BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE := $(TARGET_BOARD_PLATFORM)
-BOARD_VENDOR_QCOM_LOC_PDK_FEATURE_SET := true
+USE_DEVICE_SPECIFIC_GPS := true
+USE_DEVICE_SPECIFIC_LOC_API := true
+TARGET_NO_RPC := true
 
 # Camera
 USE_DEVICE_SPECIFIC_CAMERA := true
@@ -176,9 +177,6 @@ BOARD_SEPOLICY_DIRS += $(COMMON_PATH)/sepolicy
 
 # Disable HW based full disk encryption
 TARGET_HW_DISK_ENCRYPTION := false
-
-# Vendor init
-TARGET_INIT_VENDOR_LIB := libinit_msm
 
 # NFC
 BOARD_NFC_CHIPSET := pn547
