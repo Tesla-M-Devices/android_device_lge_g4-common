@@ -7,7 +7,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
     vidc.enc.dcvs.extra-buff-count=2 \
     persist.camera.cpp.duplication=false
 
-#Audio
+# Audio
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.qc.sdk.audio.ssr=false \
     persist.audio.ssr.3mic=false \
@@ -26,23 +26,26 @@ PRODUCT_PROPERTY_OVERRIDES += \
     mm.enable.qcom_parser=3314291 \
     mm.enable.smoothstreaming=true \
     media.aac_51_output_enabled=true \
-    qcom.hw.aac.encoder=true
+    qcom.hw.aac.encoder=true \
+    ro.sys.sdcardfs=true
 
 # Bluetooth
 PRODUCT_PROPERTY_OVERRIDES += \
     bluetooth.chip.vendor=brcm \
+    qcom.bluetooth.soc=rome \
     ro.bt.bdaddr_path="/data/misc/bluetooth/bdaddr" \
     persist.service.avrcp.browsing=1
 
-# Display
-#
-# OpenGLES:
-# 196608 is decimal for 0x30000 to report major/minor versions as 3/0
-# 196609 is decimal for 0x30001 to report major/minor versions as 3/1
+# Display / OpenGLES
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.hwc.mdpcomp.enable=true \
-    ro.opengles.version=196609 \
+    ro.opengles.version=196610 \
     ro.sf.lcd_density=560
+
+# Perfd
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.min_freq_0=384000 \
+    ro.min_freq_4=384000
 
 # GPS
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -71,17 +74,19 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.vendor.extension_library=libqti-perfd-client.so \
     persist.dpm.feature=3
 
-# Radio
-PRODUCT_PROPERTY_OVERRIDES += \
-    rild.libpath=/vendor/lib64/libril-qc-qmi-1.so \
-    persist.radio.apm_sim_not_pwdn=1 \
-    persist.radio.add_power_save=1 \
-    ro.ril.telephony.mqanelements=5 \
-    ro.telephony.ril_class=LgeLteRIL
-
+# QMI
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.data.netmgrd.qos.enable=false \
+    persist.data.qmi.adb_logmask=0 \
+    persist.qcril.disable_retry=true \
+    rild.libpath=/vendor/lib64/libril-qc-qmi-1.so \
     ro.use_data_netmgrd=true
+
+# Radio
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.radio.apm_sim_not_pwdn=1 \
+    persist.radio.add_power_save=1 \
+    persist.telephony.oosisdc=false
 
 # Factory Reset Protection
 PRODUCT_PROPERTY_OVERRIDES += \

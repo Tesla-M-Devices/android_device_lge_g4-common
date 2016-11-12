@@ -59,8 +59,6 @@ on early-fs
     chown system /sys/process/task_comm_list
 
 on init
-    export LD_SHIM_LIBS /system/lib/libril.so|liblge.so:/system/lib64/libril.so|liblge.so
-
     mkdir /firmware 0771 system system
     mkdir /firmware/image 0771 system system
     mkdir /persist/data 0700 system system
@@ -83,8 +81,6 @@ on init
     # Set permissions for drm partition
     mkdir /persist-lg 0771 system system
 
-    # Support legacy paths
-    symlink /sdcard /mnt/sdcard
     symlink /sdcard /storage/sdcard0
 
 on early-boot
@@ -393,9 +389,6 @@ on post-fs-data
     chown radio radio /data/misc/radio/copy_complete
     chmod 0660 /data/misc/radio/copy_complete
 
-    # Socket location for RIDL
-    mkdir /dev/socket/RIDL 2770 system system
-
     # Create directory for TZ Apps
     mkdir /data/misc/qsee 0770 system system
 
@@ -507,6 +500,7 @@ on post-fs-data
     chmod 2755 /data/misc/perfd
     mkdir /data/system/perfd 0770 root system
     chmod 2770 /data/system/perfd
+    rm /data/system/perfd/default_values
 
     # Create directory used by sensor subsystem
     mkdir /persist/sensors 0775 system root
@@ -549,13 +543,6 @@ on post-fs-data
     chown system system /sys/devices/virtual/graphics/fb0/rgb
     chmod 0660 /sys/devices/virtual/graphics/fb0/rgb
 
-    # RIDL data
-    mkdir /data/misc/SelfHost/ 0710 system shell
-    mkdir /data/misc/SelfHost/QCLogs/ 2750 system shell
-    mkdir /data/misc/SelfHost/QCLogs/temp/ 0700 system shell
-    mkdir /data/misc/SelfHost/storage/ 0700 system shell
-    mkdir /data/misc/SelfHost/Running/ 2750 system shell
-
 service ssr_setup /system/bin/ssr_setup
     oneshot
     disabled
@@ -575,9 +562,6 @@ on property:persist.sys.ssr.enable_ramdumps=1
 
 on property:persist.sys.ssr.enable_ramdumps=0
     write /sys/module/subsystem_restart/parameters/enable_ramdumps 0
-
-on property:init.svc.wpa_supplicant=stopped
-    stop dhcpcd
 
 on property:bluetooth.isEnabled=true
     start btwlancoex
@@ -742,74 +726,6 @@ service amp_unload /system/bin/amploader -u
     disabled
     oneshot
 
-service dhcpcd_wlan0 /system/bin/dhcpcd -ABKLG
-    class late_start
-    disabled
-    oneshot
-
-service dhcpcd_p2p /system/bin/dhcpcd -ABKLG
-    class late_start
-    disabled
-    oneshot
-
-service iprenew_wlan0 /system/bin/dhcpcd -n
-    class late_start
-    disabled
-    oneshot
-
-service iprenew_p2p /system/bin/dhcpcd -n
-    class late_start
-    disabled
-    oneshot
-
-service ptt_socket_app /system/bin/ptt_socket_app -d
-    class main
-    user root
-    group root
-    disabled
-    oneshot
-
-service ptt_ffbm /system/bin/ptt_socket_app -f -d
-    user root
-    group root
-    disabled
-    oneshot
-
-service ftm_ffbm /system/bin/ftmdaemon
-    user root
-    group root
-    disabled
-    oneshot
-
-service dhcpcd_bt-pan /system/bin/dhcpcd -BKLG
-    class late_start
-    disabled
-    oneshot
-
-service iprenew_bt-pan /system/bin/dhcpcd -n
-    class late_start
-    disabled
-    oneshot
-
-service dhcpcd_bnep0 /system/bin/dhcpcd -BKLG
-    disabled
-    oneshot
-
-service dhcpcd_bnep1 /system/bin/dhcpcd -BKLG
-    disabled
-    oneshot
-
-service dhcpcd_bnep2 /system/bin/dhcpcd -BKLG
-    disabled
-    oneshot
-
-service dhcpcd_bnep3 /system/bin/dhcpcd -BKLG
-    disabled
-    oneshot
-
-service dhcpcd_bnep4 /system/bin/dhcpcd -BKLG
-    disabled
-    oneshot
 
 service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
     class late_start
@@ -817,6 +733,7 @@ service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
     group system
     disabled
     oneshot
+
 
 on property:crypto.driver.load=1
      insmod /system/lib/modules/qce.ko
@@ -949,9 +866,10 @@ service vm_bms /system/bin/vm_bms
     group root
 
 service msm_irqbalance /system/bin/msm_irqbalance -f /system/vendor/etc/msm_irqbalance.conf
-   class core
+    class core
     user root
     group root
+    writepid /dev/cpuset/system-background/tasks
 
 # init.qcom.usb.sh configure RNDIS to go through HW IPA
 service qcom-usb-sh /system/bin/sh /init.qcom.usb.sh
@@ -984,6 +902,7 @@ service qcamerasvr /system/bin/mm-qcamera-daemon
     class late_start
     user camera
     group camera system inet input graphics
+    writepid /dev/cpuset/system-background/tasks
 
 service qseecomd /system/bin/qseecomd
     class core
@@ -993,7 +912,8 @@ service qseecomd /system/bin/qseecomd
 service perfd /system/vendor/bin/perfd
     class main
     user root
-    disabled
+    group system
+    writepid /dev/cpuset/system-background/tasks
 
 service per_mgr /system/bin/pm-service
     class core
@@ -1025,6 +945,7 @@ on property:init.svc.bootanim=running
 
 on property:init.svc.bootanim=stopped
     start usf-post-boot
+    restart cameraserver
 
 on property:sys.boot_completed=1
     start qcom-post-boot
@@ -1158,12 +1079,6 @@ service lge-sensor-sh /system/bin/sh /init.msm8992.sensor.sh
     oneshot
     seclabel u:r:sensors:s0
 # start sensor daemon as core class [END]
-
-service RIDL /system/vendor/bin/RIDLClient.exe
-    class late_start
-    oneshot
-    user system
-    group system inet log sdcard_r sdcard_rw
 
 on property:gsm.version.baseband=""
     start baseband-sh
