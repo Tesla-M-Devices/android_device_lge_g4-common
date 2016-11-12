@@ -59,8 +59,8 @@ TARGET_KERNEL_SOURCE := kernel/lge/msm8992
 TARGET_USES_UNCOMPRESSED_KERNEL := true
 
 # Kernel Toolchain
-KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_OS)-x86/aarch64/aarch64-linux-android-4.9-kernel/bin
-KERNEL_TOOLCHAIN_PREFIX := aarch64-linux-android-
+#KERNEL_TOOLCHAIN := $(ANDROID_BUILD_TOP)/prebuilts/gcc/$(HOST_OS)-x86/aarch64/aarch64-linux-android-4.9-kernel/bin
+#KERNEL_TOOLCHAIN_PREFIX := aarch64-linux-android-
 
 
 # Partitions
