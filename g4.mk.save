@@ -201,7 +201,7 @@ PRODUCT_PACKAGES += \
 
 # QuickCircle Case App
 PRODUCT_PACKAGES += \
-    FlipFlap
+    QuickCircle
 
 # GPS
 PRODUCT_PACKAGES += \
@@ -242,10 +242,6 @@ PRODUCT_PACKAGES += \
     libOmxVidcCommon \
     libstagefrighthw \
     libstagefright_soft_flacdec
-
-# DRM
-PRODUCT_PACKAGES += \
-    libshims_wvm
 
 # Power
 PRODUCT_PACKAGES += \
