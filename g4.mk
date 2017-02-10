@@ -201,7 +201,7 @@ PRODUCT_PACKAGES += \
 
 # QuickCircle Case App
 PRODUCT_PACKAGES += \
-    FlipFlap
+    QuickCircle
 
 # GPS
 PRODUCT_PACKAGES += \
