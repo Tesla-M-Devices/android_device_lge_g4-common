@@ -89,8 +89,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     persist.telephony.oosisdc=false
 
 # Factory Reset Protection
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.frp.pst=/dev/block/bootdevice/by-name/persistent
+#PRODUCT_PROPERTY_OVERRIDES += \
+#    ro.frp.pst=/dev/block/bootdevice/by-name/persistent
 
 # Sensor debugging
 # Valid settings (and presumably what they mean):
